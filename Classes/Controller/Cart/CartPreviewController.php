@@ -8,7 +8,7 @@ namespace Extcode\Cart\Controller\Cart;
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-
+use Psr\Http\Message\ResponseInterface;
 use Extcode\Cart\Utility\OrderUtility;
 
 class CartPreviewController extends ActionController
@@ -24,9 +24,10 @@ class CartPreviewController extends ActionController
         $this->orderUtility = $orderUtility;
     }
 
-    public function showAction()
+    public function showAction(): ResponseInterface
     {
         $this->restoreSession();
         $this->view->assign('cart', $this->cart);
+        return $this->htmlResponse();
     }
 }

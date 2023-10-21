@@ -8,6 +8,7 @@ namespace Extcode\Cart\Controller\Cart;
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
+use Psr\Http\Message\ResponseInterface;
 use Extcode\Cart\Domain\Model\Order\BillingAddress;
 use Extcode\Cart\Domain\Model\Order\Item;
 use Extcode\Cart\Domain\Model\Order\ShippingAddress;
@@ -186,9 +187,10 @@ class OrderController extends ActionController
     /**
      * @param Item $orderItem
      */
-    public function showAction(Item $orderItem)
+    public function showAction(Item $orderItem): ResponseInterface
     {
         $this->view->assign('orderItem', $orderItem);
+        return $this->htmlResponse();
     }
 
     /**

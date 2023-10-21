@@ -8,7 +8,7 @@ namespace Extcode\Cart\ViewHelpers;
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
 use TYPO3\CMS\Core\Resource\Exception\InvalidFileException;
 use TYPO3\CMS\Core\Resource\Exception\InvalidFileNameException;
@@ -48,7 +48,7 @@ class IncludeFileViewHelper extends AbstractViewHelper
         $compress = $this->arguments['compress'];
 
         $pageRenderer = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Page\\PageRenderer');
-        if (TYPO3_MODE === 'FE') {
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
             try {
                 $path = GeneralUtility::makeInstance(FilePathSanitizer::class)->sanitize((string) $path);
             } catch (InvalidFileNameException $e) {

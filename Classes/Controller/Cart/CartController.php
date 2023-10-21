@@ -8,7 +8,7 @@ namespace Extcode\Cart\Controller\Cart;
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-
+use Psr\Http\Message\ResponseInterface;
 use Extcode\Cart\Domain\Model\Order\BillingAddress;
 use Extcode\Cart\Domain\Model\Order\Item;
 use Extcode\Cart\Domain\Model\Order\ShippingAddress;
@@ -59,7 +59,7 @@ class CartController extends ActionController
         Item $orderItem = null,
         BillingAddress $billingAddress = null,
         ShippingAddress $shippingAddress = null
-    ): void {
+    ): ResponseInterface {
         $this->restoreSession();
         if (is_null($billingAddress)) {
             $sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'cart_billing_address_' . $this->settings['cart']['pid']);
@@ -145,6 +145,7 @@ class CartController extends ActionController
             'shippingAddress' => $shippingAddress
         ];
         $this->view->assignMultiple($assignArguments);
+        return $this->htmlResponse();
     }
 
     public function clearAction(): void

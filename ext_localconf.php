@@ -1,6 +1,6 @@
 <?php
 
-defined('TYPO3_MODE') or die();
+defined('TYPO3') or die();
 
 use Extcode\Cart\Controller\Cart\CartController;
 use Extcode\Cart\Controller\Cart\CartPreviewController;

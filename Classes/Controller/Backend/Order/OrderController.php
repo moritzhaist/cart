@@ -8,6 +8,7 @@ namespace Extcode\Cart\Controller\Backend\Order;
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
+use Psr\Http\Message\ResponseInterface;
 use Extcode\Cart\Controller\Backend\ActionController;
 use Extcode\Cart\Domain\Model\Cart\Cart;
 use Extcode\Cart\Domain\Model\Order\Item;
@@ -69,7 +70,7 @@ class OrderController extends ActionController
         }
     }
 
-    public function listAction(int $currentPage = 1): void
+    public function listAction(int $currentPage = 1): ResponseInterface
     {
         $this->view->assign('searchArguments', $this->searchArguments);
 
@@ -96,9 +97,10 @@ class OrderController extends ActionController
 
         $pdfRendererInstalled = ExtensionManagementUtility::isLoaded('cart_pdf');
         $this->view->assign('pdfRendererInstalled', $pdfRendererInstalled);
+        return $this->htmlResponse();
     }
 
-    public function exportAction(): void
+    public function exportAction(): ResponseInterface
     {
         $format = $this->request->getFormat();
 
@@ -118,7 +120,7 @@ class OrderController extends ActionController
                 ->withAddedHeader('Content-Type', 'text/' . $format)
                 ->withAddedHeader('Content-Description', 'File transfer')
                 ->withAddedHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
-            return;
+            return $this->htmlResponse(null);
         }
 
         if ($this->response) {
@@ -127,12 +129,13 @@ class OrderController extends ActionController
             $this->response->setHeader('Content-Description', 'File transfer', true);
             $this->response->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"', true);
         }
+        return $this->htmlResponse();
     }
 
     /**
      * @IgnoreValidation("orderItem")
      */
-    public function showAction(Item $orderItem): void
+    public function showAction(Item $orderItem): ResponseInterface
     {
         $this->view->assign('orderItem', $orderItem);
 
@@ -158,6 +161,7 @@ class OrderController extends ActionController
 
         $pdfRendererInstalled = ExtensionManagementUtility::isLoaded('cart_pdf');
         $this->view->assign('pdfRendererInstalled', $pdfRendererInstalled);
+        return $this->htmlResponse();
     }
 
     public function generateNumberAction(Item $orderItem, string $numberType): void

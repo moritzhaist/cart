@@ -113,7 +113,7 @@ class ItemsProcFunc
         $allLayouts = [];
         foreach ($templateLayouts as $key => $layout) {
             if (is_array($layout[0])) {
-                if (isset($layout[0]['allowedColPos']) && StringUtility::endsWith($layout[1], '.')) {
+                if (isset($layout[0]['allowedColPos']) && \str_ends_with($layout[1], '.')) {
                     $layoutKey = substr($layout[1], 0, -1);
                     $restrictions[$layoutKey] = GeneralUtility::intExplode(',', $layout[0]['allowedColPos'], true);
                 }

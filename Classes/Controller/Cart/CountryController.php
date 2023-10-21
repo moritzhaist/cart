@@ -2,19 +2,19 @@
 
 namespace Extcode\Cart\Controller\Cart;
 
+use Psr\Http\Message\ResponseInterface;
 /*
  * This file is part of the package extcode/cart.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-
 class CountryController extends ActionController
 {
     /**
      *
      */
-    public function updateAction()
+    public function updateAction(): ResponseInterface
     {
         //ToDo check country is allowed by TypoScript
 
@@ -64,5 +64,6 @@ class CountryController extends ActionController
             'specials' => $this->specials
         ];
         $this->view->assignMultiple($assignArguments);
+        return $this->htmlResponse();
     }
 }

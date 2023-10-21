@@ -1,5 +1,5 @@
 <?php
-defined('TYPO3_MODE') or die();
+defined('TYPO3') or die();
 
 call_user_func(function () {
     $_LLL_be = 'LLL:EXT:cart/Resources/Private/Language/locallang_be.xlf:';

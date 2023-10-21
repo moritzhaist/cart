@@ -8,6 +8,7 @@ namespace Extcode\Cart\Controller\Order;
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
+use Psr\Http\Message\ResponseInterface;
 use Extcode\Cart\Domain\Model\Order\Item;
 use Extcode\Cart\Domain\Repository\Order\ItemRepository;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
@@ -62,7 +63,7 @@ class OrderController extends ActionController
             );
     }
 
-    public function listAction(int $currentPage = 1): void
+    public function listAction(int $currentPage = 1): ResponseInterface
     {
         $this->view->assign('searchArguments', $this->searchArguments);
 
@@ -87,6 +88,7 @@ class OrderController extends ActionController
         );
 
         $this->view->assign('orderItems', $orderItems);
+        return $this->htmlResponse();
     }
 
     /**

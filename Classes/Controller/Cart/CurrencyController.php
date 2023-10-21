@@ -8,7 +8,7 @@ namespace Extcode\Cart\Controller\Cart;
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-
+use Psr\Http\Message\ResponseInterface;
 use Extcode\Cart\Utility\CurrencyUtility;
 
 class CurrencyController extends ActionController
@@ -35,7 +35,7 @@ class CurrencyController extends ActionController
     /**
      *
      */
-    public function updateAction()
+    public function updateAction(): ResponseInterface
     {
         $this->currencyUtility->updateCurrency($this->settings['cart'], $this->pluginSettings, $this->request);
 
@@ -60,5 +60,6 @@ class CurrencyController extends ActionController
             ];
             $this->view->assignMultiple($assignArguments);
         }
+        return $this->htmlResponse();
     }
 }

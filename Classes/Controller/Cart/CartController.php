@@ -28,7 +28,7 @@ class CartController extends ActionController
             return;
         }
 
-        $steps = (int)$this->settings['cart']['steps'];
+        $steps = (int)($this->settings['cart']['steps'] ?? 0);
         if ($steps > 1) {
             if ($this->request->hasArgument('step')) {
                 $currentStep = (int)$this->request->getArgument('step') ?: 1;
@@ -62,16 +62,39 @@ class CartController extends ActionController
     ): ResponseInterface {
         $this->restoreSession();
         if (is_null($billingAddress)) {
-            $sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'cart_billing_address_' . $this->settings['cart']['pid']);
-            $billingAddress = unserialize($sessionData);
+            if (isset($this->settings['cart']['pid'])) {
+                $sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'cart_billing_address_' . $this->settings['cart']['pid']);
+            } else {
+                // Handle the case where the key doesn't exist or provide a default value
+                $sessionData = null; // Or some other default value or behavior
+            }
+            if ($sessionData !== null && is_string($sessionData)) {
+                $billingAddress = unserialize($sessionData);
+            } else {
+                // Handle the scenario where $sessionData is null or not a string
+                $billingAddress = null; // or provide some other default value or behavior
+            }
         } else {
             $sessionData = serialize($billingAddress);
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'cart_billing_address_' . $this->settings['cart']['pid'], $sessionData);
             $GLOBALS['TSFE']->fe_user->storeSessionData();
         }
+
         if (is_null($shippingAddress)) {
-            $sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'cart_shipping_address_' . $this->settings['cart']['pid']);
-            $shippingAddress = unserialize($sessionData);
+            $pid = isset($this->settings['cart']['pid']) ? $this->settings['cart']['pid'] : null;
+
+            if ($pid !== null) {
+                $sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'cart_shipping_address_' . $pid);
+            } else {
+                // Handle the case where the key doesn't exist, e.g., provide a default value or log an error.
+                $sessionData = null;
+            }
+            if ($sessionData !== null && is_string($sessionData)) {
+               $shippingAddress = unserialize($sessionData);
+            } else {
+               // Handle the scenario where $sessionData is null or not a string
+               $billingAddress = null; // or provide some other default value or behavior
+            }
         } else {
             $sessionData = serialize($shippingAddress);
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'cart_shipping_address_' . $this->settings['cart']['pid'], $sessionData);

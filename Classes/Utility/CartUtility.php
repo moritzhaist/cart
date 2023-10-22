@@ -212,15 +212,20 @@ class CartUtility
      */
     public function getNewCart(array $pluginSettings)
     {
-        $isNetCart = intval($pluginSettings['settings']['cart']['isNetCart']) == 0 ? false : true;
+        $isNetCartValue = $pluginSettings['settings']['cart']['isNetCart'] ?? 0;
+        $isNetCart = intval($isNetCartValue) == 0 ? false : true;
 
         $defaultCurrency = [];
-        $defaultCurrencyNum = $pluginSettings['settings']['currencies']['default'];
-        if ($pluginSettings['settings']['currencies'][$defaultCurrencyNum]) {
-            $defaultCurrency = $pluginSettings['settings']['currencies'][$defaultCurrencyNum];
-        }
+        // Check if the necessary keys are set before accessing them
+        if (isset($pluginSettings['settings']['currencies']['default'])) {
+           $defaultCurrencyNum = $pluginSettings['settings']['currencies']['default'];
 
-        $defaultCountry  = $pluginSettings['settings']['defaultCountry'];
+           if (isset($pluginSettings['settings']['currencies'][$defaultCurrencyNum])) {
+               $defaultCurrency = $pluginSettings['settings']['currencies'][$defaultCurrencyNum];
+           }
+       }
+
+        $defaultCountry  = $pluginSettings['settings']['defaultCountry'] ?? 0;
 
         $taxClasses = $this->parserUtility->parseTaxClasses($pluginSettings, $defaultCountry);
 
@@ -229,9 +234,9 @@ class CartUtility
             Cart::class,
             $taxClasses,
             $isNetCart,
-            $defaultCurrency['code'],
-            $defaultCurrency['sign'],
-            $defaultCurrency['translation']
+            $defaultCurrency['code'] ?? 0,
+            $defaultCurrency['sign'] ?? 0,
+            $defaultCurrency['translation'] ?? 0
         );
 
         if ($defaultCountry) {

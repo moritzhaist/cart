@@ -130,11 +130,15 @@ class ActionController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     protected function restoreSession()
     {
-        $this->cart = $this->sessionHandler->restore($this->settings['cart']['pid']);
+        // Check for the 'cart' key first, then for the nested 'pid' key, and provide a default value of 0 if not set.
+        $pid = isset($this->settings['cart']) && isset($this->settings['cart']['pid']) ? $this->settings['cart']['pid'] : 0;
+
+        $this->cart = $this->sessionHandler->restore($pid);
 
         if (!$this->cart instanceof Cart) {
             $this->cart = $this->cartUtility->getNewCart($this->pluginSettings);
-            $this->sessionHandler->write($this->cart, $this->settings['cart']['pid']);
+            // Similarly, safely attempt to write to the session using the 'pid' key.
+            $this->sessionHandler->write($this->cart, $pid);
         }
     }
 }

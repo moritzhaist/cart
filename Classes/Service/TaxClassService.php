@@ -46,7 +46,13 @@ class TaxClassService implements TaxClassServiceInterface
     public function getTaxClasses(string $countryCode): array
     {
         $taxClasses = [];
-        $taxClassSettings = $this->settings['taxClasses'];
+        // Check if 'taxClasses' key exists in $this->settings before accessing it
+        if (isset($this->settings['taxClasses'])) {
+            $taxClassSettings = $this->settings['taxClasses'];
+        } else {
+            // Provide a default value or handle the missing key appropriately
+            $taxClassSettings = []; // Default to an empty array
+        }
 
         if (
             array_key_exists($countryCode, $taxClassSettings) &&

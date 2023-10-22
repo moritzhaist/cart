@@ -94,7 +94,7 @@ class CurrencyViewHelper extends AbstractViewHelper
 
         $settings = $this->templateVariableContainer->get('settings');
 
-        if ($settings && $settings['format'] && $settings['format']['currency']) {
+        if ($settings && isset($settings['format']) && isset($settings['format']['currency'])) {
             $currencyFormat = $settings['format']['currency'];
 
             if (!$currencySign) {
@@ -140,7 +140,11 @@ class CurrencyViewHelper extends AbstractViewHelper
             $floatToFormat = $floatToFormat / $currencyTranslation;
         }
 
+        // Set a default value if $decimals is null
+        $decimals = $decimals !== null ? $decimals : 0;
+
         $output = number_format($floatToFormat, $decimals, $decimalSeparator, $thousandsSeparator);
+
         if ($currencySign !== '') {
             $currencySeparator = $separateCurrency ? ' ' : '';
             if ($prependCurrency === true) {

@@ -716,10 +716,16 @@ class Cart
      *
      * @return Product
      */
-    public function getProductById($id)
-    {
-        return $this->products[$id];
-    }
+     public function getProductById($id)
+     {
+         if (isset($this->products[$id])) {
+             return $this->products[$id];
+         } else {
+             // Handle the case where the key does not exist
+             // You can return a default value or throw an exception, depending on your application's requirements
+             return null; // or throw new Exception("Product not found for ID: $id");
+         }
+     }
 
     /**
      * @param $id

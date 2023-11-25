@@ -459,12 +459,14 @@ class Cart
         if ($this->payment) {
             $paymentTaxes = $this->payment->getTaxes();
             foreach ($paymentTaxes as $paymentTax) {
+                $taxes[$paymentTax['taxClassId']] = $taxes[$paymentTax['taxClassId']] ?? 0; // ensure, $taxes[<int>] exists
                 $taxes[$paymentTax['taxClassId']] += $paymentTax['tax'];
             }
         }
         if ($this->shipping) {
             $shippingTaxes = $this->shipping->getTaxes();
             foreach ($shippingTaxes as $shippingTax) {
+                $taxes[$shippingTax['taxClassId']] = $taxes[$shippingTax['taxClassId']] ?? 0; // ensure, $taxes[<int>] exists
                 $taxes[$shippingTax['taxClassId']] += $shippingTax['tax'];
             }
         }
@@ -472,6 +474,7 @@ class Cart
             foreach ($this->specials as $special) {
                 $specialTaxes = $special->getTaxes();
                 foreach ($specialTaxes as $specialTax) {
+                    $taxes[$specialTax['taxClassId']] = $taxes[$specialTax['taxClassId']] ?? 0; // ensure, $taxes[<int>] exists
                     $taxes[$specialTax['taxClassId']] += $specialTax['tax'];
                 }
             }
@@ -508,6 +511,9 @@ class Cart
 
         $serviceTaxes = $this->getServiceTaxes();
         foreach ($serviceTaxes as $taxClassId => $tax) {
+            if (!isset($taxes[$taxClassId])) {
+                $taxes[$taxClassId] = 0;
+            }
             $taxes[$taxClassId] += $tax;
         }
 
@@ -1071,19 +1077,25 @@ class Cart
      *
      * @return int
      */
-    public function removeProductById(string $product): int
-    {
-        $product = $this->products[$product];
-        if ($product) {
-            $this->removeProduct($product);
-        } else {
-            return -1;
-        }
+public function removeProductById(string $product): int
+     {
+         // Check if the product key exists in the products array
+         if (isset($this->products[$product])) {
+             $productToRemove = $this->products[$product];
 
-        $this->updateServiceAttributes();
+             // Proceed to remove the product
+             $this->removeProduct($productToRemove);
+         } else {
+             // Return -1 if the product key does not exist
+             return -1;
+         }
 
-        return true;
-    }
+         // Update service attributes
+         $this->updateServiceAttributes();
+
+         // Return a success indicator, for example, 0
+         return 0;
+     }
 
     /**
      * @param Product $product

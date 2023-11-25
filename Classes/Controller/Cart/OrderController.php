@@ -61,10 +61,7 @@ class OrderController extends ActionController
             if (!$this->arguments->hasArgument($argumentName)) {
                 continue;
             }
-            if ($this->settings['validation'] &&
-                $this->settings['validation'][$argumentName] &&
-                $this->settings['validation'][$argumentName]['fields']
-            ) {
+            if (isset($this->settings['validation'][$argumentName]['fields'])) {
                 $fields = $this->settings['validation'][$argumentName]['fields'];
 
                 foreach ($fields as $propertyName => $validatorConf) {
@@ -73,7 +70,7 @@ class OrderController extends ActionController
                         $propertyName,
                         [
                             'validator' => $validatorConf['validator'],
-                            'options' => is_array($validatorConf['options'])
+                            'options' => is_array($validatorConf['options'] ?? null)
                                 ? $validatorConf['options']
                                 : []
                         ]
@@ -123,7 +120,14 @@ class OrderController extends ActionController
         }
         if (is_null($shippingAddress)) {
             $sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'cart_shipping_address_' . $this->settings['cart']['pid']);
-            $shippingAddress = unserialize($sessionData);
+            // Check if $sessionData is a string before unserializing
+            if (is_string($sessionData)) {
+                $shippingAddress = unserialize($sessionData);
+            } else {
+            // Handle the case where $sessionData is not a string or is null
+            // For example, you might want to set $shippingAddress to a default value or handle it as an error
+            $shippingAddress = null; // or any appropriate default value or error handling
+            }
         } else {
             $sessionData = serialize($shippingAddress);
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'cart_shipping_address_' . $this->settings['cart']['pid'], $sessionData);
@@ -175,11 +179,7 @@ class OrderController extends ActionController
         $paymentId = $this->cart->getPayment()->getId();
         $paymentSettings = $this->parserUtility->getTypePluginSettings($this->pluginSettings, $this->cart, 'payments');
 
-        if ($paymentSettings['options'][$paymentId] &&
-            $paymentSettings['options'][$paymentId]['redirects'] &&
-            $paymentSettings['options'][$paymentId]['redirects']['success'] &&
-            $paymentSettings['options'][$paymentId]['redirects']['success']['url']
-        ) {
+        if (isset($paymentSettings['options'][$paymentId]['redirects']['success']['url'])) {
             $this->redirectToUri($paymentSettings['options'][$paymentId]['redirects']['success']['url'], 0, 200);
         }
     }

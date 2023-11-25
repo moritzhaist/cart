@@ -286,7 +286,14 @@ class OrderUtility
 
         $orderItem->setPid($this->storagePid);
 
-        $feUserId = (int)$GLOBALS['TSFE']->fe_user->user['uid'];
+        if (isset($GLOBALS['TSFE']->fe_user->user['uid'])) {
+            $feUserId = (int)$GLOBALS['TSFE']->fe_user->user['uid'];
+        } else {
+            // Handle the case where 'uid' is not set
+            // For example, you might want to set $feUserId to a default value or handle it as an error
+            $feUserId = 0; // Example default value
+        }
+
         if ($feUserId) {
             $frontendUserRepository = GeneralUtility::makeInstance(
                 FrontendUserRepository::class

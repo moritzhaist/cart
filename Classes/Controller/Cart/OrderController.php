@@ -112,7 +112,9 @@ class OrderController extends ActionController
     ) {
         if (is_null($billingAddress)) {
             $sessionData = $GLOBALS['TSFE']->fe_user->getKey('ses', 'cart_billing_address_' . $this->settings['cart']['pid']);
-            $billingAddress = unserialize($sessionData);
+            if ($sessionData !== null) {
+                $billingAddress = unserialize($sessionData);
+            }
         } else {
             $sessionData = serialize($billingAddress);
             $GLOBALS['TSFE']->fe_user->setKey('ses', 'cart_billing_address_' . $this->settings['cart']['pid'], $sessionData);

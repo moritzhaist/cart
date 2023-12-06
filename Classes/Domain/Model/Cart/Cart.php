@@ -494,7 +494,11 @@ class Cart
             foreach ($this->coupons as $coupon) {
                 if ($coupon->getIsUseable()) {
                     $tax = $coupon->getTax();
-                    $taxes[$coupon->getTaxClass()->getId()] -= $tax;
+                    if (isset($taxes[$taxClassId])) {
+                        $taxes[$taxClassId] -= $tax;
+                    } else {
+                        $taxes[$taxClassId] = -$tax;
+                    }
                 }
             }
         }
@@ -722,16 +726,16 @@ class Cart
      *
      * @return Product
      */
-     public function getProductById($id)
-     {
-         if (isset($this->products[$id])) {
-             return $this->products[$id];
-         } else {
-             // Handle the case where the key does not exist
+    public function getProductById($id)
+    {
+        if (isset($this->products[$id])) {
+            return $this->products[$id];
+        } else {
+            // Handle the case where the key does not exist
              // You can return a default value or throw an exception, depending on your application's requirements
              return null; // or throw new Exception("Product not found for ID: $id");
-         }
-     }
+        }
+    }
 
     /**
      * @param $id
@@ -1077,25 +1081,25 @@ class Cart
      *
      * @return int
      */
-public function removeProductById(string $product): int
-     {
-         // Check if the product key exists in the products array
-         if (isset($this->products[$product])) {
-             $productToRemove = $this->products[$product];
+    public function removeProductById(string $product): int
+    {
+        // Check if the product key exists in the products array
+        if (isset($this->products[$product])) {
+            $productToRemove = $this->products[$product];
 
-             // Proceed to remove the product
-             $this->removeProduct($productToRemove);
-         } else {
-             // Return -1 if the product key does not exist
-             return -1;
-         }
+            // Proceed to remove the product
+            $this->removeProduct($productToRemove);
+        } else {
+            // Return -1 if the product key does not exist
+            return -1;
+        }
 
-         // Update service attributes
-         $this->updateServiceAttributes();
+        // Update service attributes
+        $this->updateServiceAttributes();
 
-         // Return a success indicator, for example, 0
-         return 0;
-     }
+        // Return a success indicator, for example, 0
+        return 0;
+    }
 
     /**
      * @param Product $product

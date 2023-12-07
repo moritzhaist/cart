@@ -391,12 +391,17 @@ class OrderUtility
              * Order Tax
              * @var $orderTax \Extcode\Cart\Domain\Model\Order\Tax
              */
-            $orderTax = GeneralUtility::makeInstance(
-                Tax::class,
-                $cartTax,
-                $this->taxClasses[$cartTaxKey]
-            );
-            $orderTax->setPid($this->storagePid);
+            if (isset($this->taxClasses[$cartTaxKey])) {
+                $orderTax = GeneralUtility::makeInstance(
+                    Tax::class,
+                    $cartTax,
+                    $this->taxClasses[$cartTaxKey]
+                );
+                $orderTax->setPid($this->storagePid);
+            } else {
+                // Handle the case when the key doesn't exist
+               // You can set a default value, show an error message, or perform any other necessary action here
+            }
 
             $this->taxRepository->add($orderTax);
 

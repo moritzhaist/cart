@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Extcode\Cart\EventListener\Order\Finish;
 
 /*
@@ -33,7 +35,11 @@ class Email
         $paymentId = $orderItem->getPayment()->getServiceId();
 
         if ($paymentCountry) {
-            $serviceSettings = $settings['payments'][$paymentCountry]['options'][$paymentId];
+            if (isset($settings['payments'][$paymentCountry]['options'][$paymentId])) {
+                $serviceSettings = $settings['payments'][$paymentCountry]['options'][$paymentId];
+            } else {
+                $serviceSettings = null;
+            }
         } else {
             $serviceSettings = $settings['payments']['options'][$paymentId];
         }

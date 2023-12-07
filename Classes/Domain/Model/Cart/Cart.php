@@ -494,6 +494,9 @@ class Cart
             foreach ($this->coupons as $coupon) {
                 if ($coupon->getIsUseable()) {
                     $tax = $coupon->getTax();
+
+                    $taxClassId = 1;
+
                     if (isset($taxes[$taxClassId])) {
                         $taxes[$taxClassId] -= $tax;
                     } else {
@@ -523,7 +526,11 @@ class Cart
 
         $couponTaxes = $this->getCouponTaxes();
         foreach ($couponTaxes as $taxClassId => $tax) {
-            $taxes[$taxClassId] -= $tax;
+            if (isset($taxes[$taxClassId])) {
+                $taxes[$taxClassId] -= $tax;
+            } else {
+                // Handle the case when the key doesn't exist
+            }
         }
 
         return $taxes;
